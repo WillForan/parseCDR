@@ -31,11 +31,20 @@ read.forATT <- function(f) {
     # read the next line
     # increment the number of lines we've seen (for skipping later)
     nlines.preamble <- nlines.preamble + 1
+    # we are looking for lines like
+    #    Account Number: xxxxxxxxx
+    # from which will will create
+    #   allinfo['Acount Number'] = xxxxxxxxx
+
     # split the line into parts deliminted by :
     # subsitute all the white space away
     info <- sapply(strsplit(l,":"),function(x) gsub('^ *| *$','',gsub(' +',' ',x) ))
-    # if have : demited ata, info will have more than 1 item in it
+    # if this line has ':' demited data, info will have more than 1 item in it
+    # in this case, we want to keep the info, so we save it in "allinfo"
     if(length(info)>1) {
+     #info[1] (e.g. Account Number) is the variable name
+     # everything else is the value, combine back with : 
+     # (incase we had a time like 00:00:00)
      allinfo[ info[1] ] <- paste(info[-1],collapse=":")
     }
     # read the next line
